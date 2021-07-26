@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css';
-import Coin from './Coin';
+import Coin from './Components/Coin';
+import {coin_url} from './constant'
 
 function App() {
   const [coins, setCoins] = useState([]);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false')
+        axios({ url : coin_url ,method: 'GET'})
       .then(res => {
         setCoins(res.data);
         // console.log(res.data);
 
       }).catch(error => (console.log(error)));
   }, [])
+  // console.log(url)
 
   const handelSearch = (e) => {
     setSearch(e.target.value)
@@ -30,22 +32,23 @@ function App() {
       <div className='coin-search'>
         <h1 className='coin-text'> Search a currency</h1>
         <form>
-          <input type='text' placeholder='Search' onChange={handelSearch} className='coin-input'>
-          </input>
+          <input type='text' placeholder='Search' onChange={handelSearch} className='coin-input' />
+          {/* </input> */}
         </form>
       </div>
       {filteredCoin.map(coin => {
         console.log(coin);
+        const {id = '' , name ='',image='',symbol='',total_volume='', current_price='', price_change_percentage_24h='',market_cap='' } = coin;
         return (
           <Coin
-            key={coin.id}
-            name={coin.name}
-            image={coin.image}
-            symbol={coin.symbol}
-            volume={coin.total_volume}
-            price={coin.current_price}
-            priceChange={coin.price_change_percentage_24h}
-            marketcap={coin.market_cap}
+            key={id}
+            name={name}
+            image={image}
+            symbol={symbol}
+            volume={total_volume}
+            price={current_price}
+            priceChange={price_change_percentage_24h}
+            marketcap={market_cap}
 
           />
         )
